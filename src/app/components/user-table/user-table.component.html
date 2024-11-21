@@ -1,0 +1,77 @@
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th class="col-id" (click)="sortTable('id')">
+          ID
+          <span *ngIf="currentSort.column === 'id'">
+            {{ currentSort.direction === "asc" ? "▲" : "▼" }}
+          </span>
+        </th>
+        <th class="col-name" (click)="sortTable('name')">
+          Name
+          <span *ngIf="currentSort.column === 'name'">
+            {{ currentSort.direction === "asc" ? "▲" : "▼" }}
+          </span>
+        </th>
+        <th class="col-active" (click)="sortTable('active')">
+          Active
+          <span *ngIf="currentSort.column === 'active'">
+            {{ currentSort.direction === "asc" ? "▲" : "▼" }}
+          </span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of rows">
+        <td>{{ row.id }}</td>
+        <td>{{ row.name }}</td>
+        <td>
+          <button
+            class="toggle-button"
+            [class.active]="row.active"
+            (click)="toggleActive(row)"
+          >
+            {{ row.active ? "Active" : "Inactive" }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Add User Button -->
+  <div class="add-user-container">
+    <button class="add-user-button" (click)="openModal()">Add User</button>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" *ngIf="isModalOpen">
+    <div class="modal-content">
+      <button class="close-button" (click)="closeModal()">✖</button>
+      <h3>Add New User</h3>
+      <form (ngSubmit)="addUser()">
+        <div class="input-element">
+          <label for="">Name:</label>
+          <input
+            type="text"
+            [(ngModel)]="newUser.name"
+            name="name"
+            placeholder="Enter user name"
+            required
+          />
+        </div>
+        <div class="input-element">
+          <label> Active: </label>
+          <input type="checkbox" [(ngModel)]="newUser.active" name="active" />
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="cancel-button" (click)="closeModal()">
+            Cancel
+          </button>
+          <button type="submit" class="submit-button">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
