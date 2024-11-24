@@ -52,11 +52,11 @@
   <div class="add-user-container">
     <button class="add-user-button" [disabled]="!(canAddUser$ | async)" (click)="openModal()">Add User</button>
     <!-- Error Message -->
-    @if (!(allUsersActive$ | async)) {
-      <div class="add-button-error-text">Not all users are active!</div>
-    }
     @if ((maximumUsersReached$ | async)) {
       <div class="add-button-error-text">Maximum number of users (5 users) reached!</div>
+    }
+    @else if (!(allUsersActive$ | async)) {
+      <div class="add-button-error-text">Not all users are active!</div>
     }
   </div>
 
