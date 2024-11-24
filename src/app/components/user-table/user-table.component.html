@@ -2,28 +2,37 @@
   <table>
     <thead>
       <tr>
-        <th class="col-id" (click)="sortTable('id')">
+        <th
+          class="col-id"
+          (click)="sortTable('id')"
+          [class.sorted]="sortColumn === 'id'"
+          [class.asc]="sortColumn === 'id' && sortDirection === 'asc'"
+          [class.desc]="sortColumn === 'id' && sortDirection === 'desc'"
+        >
           ID
-          <span *ngIf="currentSort.column === 'id'">
-            {{ currentSort.direction === "asc" ? "▲" : "▼" }}
-          </span>
         </th>
-        <th class="col-name" (click)="sortTable('name')">
+        <th
+          class="col-name"
+          (click)="sortTable('name')"
+          [class.sorted]="sortColumn === 'name'"
+          [class.asc]="sortColumn === 'name' && sortDirection === 'asc'"
+          [class.desc]="sortColumn === 'name' && sortDirection === 'desc'"
+        >
           Name
-          <span *ngIf="currentSort.column === 'name'">
-            {{ currentSort.direction === "asc" ? "▲" : "▼" }}
-          </span>
         </th>
-        <th class="col-active" (click)="sortTable('active')">
+        <th
+          class="col-active"
+          (click)="sortTable('active')"
+          [class.sorted]="sortColumn === 'active'"
+          [class.asc]="sortColumn === 'active' && sortDirection === 'asc'"
+          [class.desc]="sortColumn === 'active' && sortDirection === 'desc'"
+        >
           Active
-          <span *ngIf="currentSort.column === 'active'">
-            {{ currentSort.direction === "asc" ? "▲" : "▼" }}
-          </span>
         </th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let row of rows">
+      <tr *ngFor="let row of users$ | async">
         <td>{{ row.id }}</td>
         <td>{{ row.name }}</td>
         <td>
@@ -41,36 +50,59 @@
 
   <!-- Add User Button -->
   <div class="add-user-container">
-    <button class="add-user-button" (click)="openModal()">Add User</button>
+    <button class="add-user-button" [disabled]="!(canAddUser$ | async)" (click)="openModal()">Add User</button>
+    <!-- Error Message -->
+    @if (!(allUsersActive$ | async)) {
+      <div class="add-button-error-text">Not all users are active!</div>
+    }
+    @if ((maximumUsersReached$ | async)) {
+      <div class="add-button-error-text">Maximum number of users (5 users) reached!</div>
+    }
   </div>
 
-  <!-- Modal -->
+    <!-- Modal -->
   <div class="modal" *ngIf="isModalOpen">
     <div class="modal-content">
       <button class="close-button" (click)="closeModal()">✖</button>
       <h3>Add New User</h3>
-      <form (ngSubmit)="addUser()">
+      <form [formGroup]="newUserForm" (ngSubmit)="addUser()">
         <div class="input-element">
           <label for="">Name:</label>
           <input
+            formControlName="name"
             type="text"
-            [(ngModel)]="newUser.name"
-            name="name"
             placeholder="Enter user name"
-            required
           />
         </div>
+        <!-- Error Message -->
+        @if (newUserForm.get('name')?.dirty) {
+          <div class="input-error">
+            @if (newUserForm.get('name')?.hasError('nameNotUnique')) {
+              <div class="input-error-text">Name is already taken!</div>
+            }
+            @if (newUserForm.get('name')?.hasError('required')) {
+              <div class="input-error-text">Name is required!</div>
+            }
+          </div>
+        }
+        
         <div class="input-element">
           <label> Active: </label>
-          <input type="checkbox" [(ngModel)]="newUser.active" name="active" />
+          <input formControlName="active" type="checkbox" />
         </div>
 
+        
         <div class="modal-actions">
-          <button type="button" class="cancel-button" (click)="closeModal()">
-            Cancel
+          <button type="submit" class="submit-button" [disabled]="!newUserForm.valid || newUserForm.pending">
+            @if (newUserForm.pending) {
+              <span class="spinner">  </span> Checking...
+            } @else {
+              Create
+            }
           </button>
-          <button type="submit" class="submit-button">Add</button>
+          <button type="button" class="cancel-button" (click)="closeModal()">Cancel</button>
         </div>
+
       </form>
     </div>
   </div>
