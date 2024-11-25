@@ -10,5 +10,4 @@ import { UserTableComponent } from "./components/user-table/user-table.component
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = '4createTestProject';
 }
