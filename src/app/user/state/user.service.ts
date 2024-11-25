@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { UserStore } from './user.store';
 import { UserQuery } from './user.query';
-import { Observable, of, timer } from 'rxjs';
-import { debounce, map, switchMap } from 'rxjs/operators';
+import { Observable, timer } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { User } from './user.model';
 
 @Injectable({ providedIn: 'root' })

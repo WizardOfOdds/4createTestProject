@@ -5,7 +5,6 @@ import {
   AsyncValidatorFn,
   FormBuilder,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -13,16 +12,13 @@ import {
   Observable,
   combineLatest,
   debounceTime,
-  distinctUntilChanged,
   first,
   map,
   of,
   switchMap,
-  tap,
 } from 'rxjs';
 import { UserService } from '../../user/state/user.service';
 import { UserQuery } from '../../user/state/user.query';
-import { UserStore } from '../../user/state/user.store';
 import { User } from '../../user/state/user.model';
 
 @Component({
